@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: kafka-observatory
+  main:
+    banner-mode: off
+
+server:
+  port: 8080
