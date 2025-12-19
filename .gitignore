@@ -1,0 +1,130 @@
+############################
+# OS / Editor
+############################
+.DS_Store
+Thumbs.db
+
+.idea/
+.vscode/
+*.iml
+
+############################
+# Logs
+############################
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+############################
+# Environment variables
+############################
+.env
+.env.*
+!.env.example
+
+############################
+# Python
+############################
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+ENV/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+htmlcov/
+
+############################
+# Python packaging
+############################
+build/
+dist/
+*.egg-info/
+
+############################
+# Node / TypeScript / React
+############################
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+
+dist/
+build/
+.out/
+.next/
+coverage/
+
+############################
+# Frontend frameworks
+############################
+.eslintcache
+.parcel-cache
+.turbo/
+
+############################
+# Gradle
+############################
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+############################
+# Java / Spring Boot
+############################
+*.class
+*.jar
+*.war
+*.ear
+
+target/
+out/
+
+############################
+# Spring Boot
+############################
+application-local.yml
+application-dev.yml
+application-prod.yml
+
+############################
+# IDE / Build tools
+############################
+*.swp
+*.swo
+
+############################
+# Docker
+############################
+docker-compose.override.yml
+*.pid
+
+############################
+# Terraform / Infra (opsiyonel)
+############################
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+
+############################
+# Test artifacts
+############################
+test-results/
+reports/
+
+############################
+# Misc
+############################
+.cache/
+tmp/
+temp/
