@@ -1,0 +1,18 @@
+kafka:
+  observatory:
+    initial-topics:
+      - name: orders
+        partitions: 3
+        replication-factor: 1
+      - name: payments
+        partitions: 2
+        replication-factor: 1
+      - name: customers
+        partitions: 1
+        replication-factor: 1
+      - name: inventory
+        partitions: 4
+        replication-factor: 1
+      - name: notifications
+        partitions: 2
+        replication-factor: 1
