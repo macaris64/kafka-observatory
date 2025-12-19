@@ -71,7 +71,7 @@ coverage/
 # Gradle
 ############################
 .gradle/
-!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
 
 ############################
 # Java / Spring Boot

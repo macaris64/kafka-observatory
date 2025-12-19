@@ -1,4 +1,4 @@
-name: Lint Kotlin Check
+name: Spotless Check
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  ktlint:
+  spotless:
     runs-on: ubuntu-latest
 
     defaults:
@@ -27,5 +27,5 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Run spotlessApply
-      run: ./gradlew spotlessApply
+    - name: Run spotlessCheck
+      run: ./gradlew spotlessCheck
