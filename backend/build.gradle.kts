@@ -40,6 +40,9 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.testcontainers:kafka:1.19.7")
+    testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

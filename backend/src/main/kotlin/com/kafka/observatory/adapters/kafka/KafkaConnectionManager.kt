@@ -16,7 +16,7 @@ class KafkaConnectionManager(
             // "The application must be able to start ... without crashing."
             // Lazy loading ensures it doesn't crash on startup unless touched.
             // If creation fails inside lazy, it will throw when accessed.
-            throw RuntimeException("Failed to create Kafka AdminClient", e)
+            throw RuntimeException("Failed to create Kafka AdminClient: ${e.message}", e)
         }
     }
 
