@@ -54,12 +54,8 @@ dist/
 # Node / TypeScript / React
 ############################
 node_modules/
-npm-debug.log*
-yarn-error.log*
 pnpm-lock.yaml
 
-dist/
-build/
 .out/
 .next/
 coverage/
@@ -75,7 +71,6 @@ coverage/
 # Gradle
 ############################
 .gradle/
-build/
 !gradle/wrapper/gradle-wrapper.jar
 
 ############################
