@@ -7,6 +7,6 @@ class KafkaConnectionManager {
     // TODO: Implement AdminClient creation and management
     // TODO: Implement Producer creation and management
     // TODO: Implement Consumer session management
-    
+
     // TODO: Read configuration from KafkaConfig
 }
