@@ -107,12 +107,28 @@ class KafkaObservatoryE2ETest {
         val wsSession = wsClient.execute(wsHandler, wsUrl).get(10, TimeUnit.SECONDS)
         assertTrue(wsSession.isOpen)
 
-        // 6. Produce Kafka messages
-        produceMessages(topic, 3, "msg-")
+        // Wait a bit and drain any messages from step 3 if they arrived (EARLIEST strategy)
+        TimeUnit.SECONDS.sleep(1)
+        wsMessages.clear()
 
-        // 7. Verify messages are received via WebSocket
+        // 6. Produce Kafka messages via REST API
+        val produceRequest =
+            mapOf(
+                "topic" to topic,
+                "key" to "e2e-key",
+                "value" to "e2e-value-1",
+            )
+        val produceResponse = restTemplate.postForEntity("/api/produce", produceRequest, Map::class.java)
+        assertEquals(200, produceResponse.statusCode.value())
+        val produceData = produceResponse.body?.get("data") as Map<*, *>
+        assertEquals(topic, produceData["topic"])
+        assertNotNull(produceData["partition"])
+        assertNotNull(produceData["offset"])
+
+        // 7. Verify message is received via WebSocket
         val m1 = wsMessages.poll(15, TimeUnit.SECONDS)
         assertNotNull(m1, "Message 1 should be received via WebSocket")
+        assertEquals("e2e-value-1", m1?.value)
 
         // 8. Pause the consume session
         val pauseResponse = restTemplate.postForEntity("/api/consume-sessions/$sessionId/pause", null, Map::class.java)
@@ -124,24 +140,32 @@ class KafkaObservatoryE2ETest {
         Thread.sleep(2000)
         wsMessages.clear()
 
-        // Produce messages while paused
-        produceMessages(topic, 2, "paused-")
+        // 9. Produce another message while paused via REST API
+        val pausedProduceRequest =
+            mapOf(
+                "topic" to topic,
+                "key" to "e2e-key-paused",
+                "value" to "e2e-value-paused",
+            )
+        val pausedProduceResponse = restTemplate.postForEntity("/api/produce", pausedProduceRequest, Map::class.java)
+        assertEquals(200, pausedProduceResponse.statusCode.value())
 
-        // Verify no new WebSocket messages arrive
+        // 10. Verify no new WebSocket messages arrive
         val pausedMsg = wsMessages.poll(3, TimeUnit.SECONDS)
         assertTrue(pausedMsg == null, "No messages should arrive while paused")
 
-        // 9. Resume the session
+        // 11. Resume the session
         val resumeResponse = restTemplate.postForEntity("/api/consume-sessions/$sessionId/resume", null, Map::class.java)
         assertEquals(200, resumeResponse.statusCode.value())
         val resumedData = resumeResponse.body?.get("data") as Map<*, *>
         assertEquals("RUNNING", resumedData["state"])
 
-        // 10. Verify streaming resumes
+        // 12. Verify the previously produced message is now streamed
         val resumedMsg = wsMessages.poll(10, TimeUnit.SECONDS)
         assertNotNull(resumedMsg, "Streaming should resume and deliver messages")
+        assertEquals("e2e-value-paused", resumedMsg?.value)
 
-        // 11. Fetch messages via REST snapshot endpoint
+        // 13. Fetch messages via REST snapshot endpoint
         val restMessagesResponse = restTemplate.getForEntity("/api/consume-sessions/$sessionId/messages", Map::class.java)
         assertEquals(200, restMessagesResponse.statusCode.value())
         val restMessages = restMessagesResponse.body?.get("data") as List<*>

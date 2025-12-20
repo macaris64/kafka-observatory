@@ -183,7 +183,40 @@ Gracefully stops the consumer and clears session data.
 
 ---
 
-## 5. Real-time Streaming (WebSocket)
+## 6. Producer API
+
+### Produce Message
+Sends a message to a Kafka topic.
+
+- **URL**: `/produce`
+- **Method**: `POST`
+- **Request Body**:
+  ```json
+  {
+    "topic": "my-topic",
+    "key": "optional-key",
+    "value": "message-payload",
+    "partition": null,
+    "headers": {}
+  }
+  ```
+- **Success Response**:
+  - **Code**: 200 OK
+  - **Body**:
+    ```json
+    {
+      "data": {
+        "topic": "my-topic",
+        "partition": 0,
+        "offset": 456,
+        "timestamp": 1700000000
+      }
+    }
+    ```
+
+---
+
+## 7. Real-time Streaming (WebSocket)
 
 ### Subscribe to Message Stream
 Opens a WebSocket connection to receive real-time updates as messages are consumed.
