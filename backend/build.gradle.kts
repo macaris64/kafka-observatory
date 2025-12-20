@@ -67,15 +67,18 @@ tasks.jacocoTestReport {
         html.required.set(true)
     }
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it).matching {
-                exclude(
-                    "**/KafkaObservatoryApplication*",
-                    "**/config/**",
-                    "**/adapters/web/rest/ProduceController\$Companion*", // excluding companion objects if generated
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it).matching {
+                    exclude(
+                        "**/KafkaObservatoryApplication*",
+                        "**/config/**",
+                        // excluding companion objects if generated
+                        "**/adapters/web/rest/ProduceController\$Companion*",
+                    )
+                }
+            },
+        ),
     )
 }
 
@@ -88,14 +91,16 @@ tasks.jacocoTestCoverageVerification {
         }
     }
     classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it).matching {
-                exclude(
-                    "**/KafkaObservatoryApplication*",
-                    "**/config/**",
-                )
-            }
-        })
+        files(
+            classDirectories.files.map {
+                fileTree(it).matching {
+                    exclude(
+                        "**/KafkaObservatoryApplication*",
+                        "**/config/**",
+                    )
+                }
+            },
+        ),
     )
 }
 

@@ -2,7 +2,7 @@
 
 # Build the backend application
 build-local-be:
-	cd backend && ./gradlew spotlessApply compileKotlin compileTestKotlin build
+	cd backend && ./gradlew spotlessApply spotlessKotlinGradle compileKotlin compileTestKotlin build
 
 # Run tests locally
 test-local:
