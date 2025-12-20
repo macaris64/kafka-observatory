@@ -30,5 +30,5 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
 
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Build and Verify Coverage with Gradle
+      run: ./gradlew build jacocoTestReport jacocoTestCoverageVerification

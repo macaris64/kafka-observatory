@@ -2,6 +2,7 @@ package com.kafka.observatory.adapters.web.rest
 
 import com.kafka.observatory.core.model.ConsumeFrom
 import com.kafka.observatory.core.service.ConsumeSessionService
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,6 +25,7 @@ data class CreateSessionRequest(
 class ConsumeSessionController(
     private val service: ConsumeSessionService,
 ) {
+    @Operation(summary = "Start a new consume session")
     @PostMapping
     fun startSession(
         @RequestBody request: CreateSessionRequest,
@@ -54,6 +56,7 @@ class ConsumeSessionController(
         return ResponseEntity.ok(mapOf("data" to session))
     }
 
+    @Operation(summary = "Get buffered messages for a session")
     @GetMapping("/{sessionId}/messages")
     fun getMessages(
         @PathVariable sessionId: String,
@@ -63,6 +66,7 @@ class ConsumeSessionController(
         return ResponseEntity.ok(mapOf("data" to messages))
     }
 
+    @Operation(summary = "Stop and remove a consume session")
     @DeleteMapping("/{sessionId}")
     fun stopSession(
         @PathVariable sessionId: String,
@@ -71,6 +75,7 @@ class ConsumeSessionController(
         return ResponseEntity.ok(mapOf("data" to session))
     }
 
+    @Operation(summary = "Pause a consume session")
     @PostMapping("/{sessionId}/pause")
     fun pauseSession(
         @PathVariable sessionId: String,
@@ -79,6 +84,7 @@ class ConsumeSessionController(
         return ResponseEntity.ok(mapOf("data" to session))
     }
 
+    @Operation(summary = "Resume a paused consume session")
     @PostMapping("/{sessionId}/resume")
     fun resumeSession(
         @PathVariable sessionId: String,
@@ -87,6 +93,7 @@ class ConsumeSessionController(
         return ResponseEntity.ok(mapOf("data" to session))
     }
 
+    @Operation(summary = "Get consume session status")
     @GetMapping("/{sessionId}")
     fun getSessionStatus(
         @PathVariable sessionId: String,

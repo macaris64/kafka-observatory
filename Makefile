@@ -4,6 +4,19 @@
 build-local-be:
 	cd backend && ./gradlew spotlessApply compileKotlin compileTestKotlin build
 
+# Run tests locally
+test-local:
+	cd backend && ./gradlew test
+
+# Run tests with JaCoCo coverage report
+test-local-coverage:
+	cd backend && ./gradlew test jacocoTestReport
+	@echo "Coverage report generated at backend/build/reports/jacoco/test/html/index.html"
+
+# Run tests with coverage verification (fails if coverage < threshold)
+test-local-coverage-verify:
+	cd backend && ./gradlew test jacocoTestReport jacocoTestCoverageVerification
+
 # Run the application locally with dependencies
 run-local:
 	@echo "Starting local infrastructure..."

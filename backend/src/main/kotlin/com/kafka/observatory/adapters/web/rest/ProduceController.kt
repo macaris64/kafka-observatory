@@ -2,6 +2,7 @@ package com.kafka.observatory.adapters.web.rest
 
 import com.kafka.observatory.core.model.ProduceRequest
 import com.kafka.observatory.ports.kafka.KafkaProducerPort
+import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 class ProduceController(
     private val producerPort: KafkaProducerPort,
 ) {
+    @Operation(summary = "Produce a message to a Kafka topic")
     @PostMapping
     fun produce(
         @RequestBody request: ProduceRequest,
