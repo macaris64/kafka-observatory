@@ -4,8 +4,11 @@ import com.kafka.observatory.core.model.ConsumeFrom
 import com.kafka.observatory.core.model.ConsumeSession
 import com.kafka.observatory.core.model.ConsumeSessionState
 import com.kafka.observatory.core.model.ConsumeSessionStatus
+import com.kafka.observatory.core.model.ConsumedMessage
+import com.kafka.observatory.core.ports.messaging.SessionMessageBroadcaster
 import com.kafka.observatory.core.session.ConsumeSessionRegistry
 import com.kafka.observatory.ports.kafka.KafkaConsumePort
+import org.slf4j.LoggerFactory
 import java.util.UUID
 
 /**
@@ -15,7 +18,10 @@ import java.util.UUID
 class ConsumeSessionService(
     private val registry: ConsumeSessionRegistry,
     private val kafkaConsumePort: KafkaConsumePort,
+    private val broadcaster: SessionMessageBroadcaster,
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     fun startSession(
         topic: String,
         groupId: String?,
@@ -39,12 +45,12 @@ class ConsumeSessionService(
         registry.register(session)
 
         // Start consumption via port
-        // Note: If port fails immediately, we might want to catch and handle,
-        // but for now we assume async start or exception propagation.
         try {
-            kafkaConsumePort.startConsumption(session)
+            kafkaConsumePort.startConsumption(session) { message ->
+                onMessageConsumed(sessionId, message)
+            }
         } catch (e: Exception) {
-            registry.updateState(sessionId, ConsumeSessionState.ERROR)
+            handleSessionError(sessionId, e)
             throw e
         }
 
@@ -58,6 +64,9 @@ class ConsumeSessionService(
 
         kafkaConsumePort.stopConsumption(sessionId)
         registry.updateState(sessionId, ConsumeSessionState.STOPPED)
+
+        // Notify broadcaster to close session
+        broadcaster.closeSession(sessionId)
 
         return registry.getSession(sessionId)!!
     }
@@ -96,6 +105,49 @@ class ConsumeSessionService(
         return registry.getSession(sessionId)!!
     }
 
+    /**
+     * Called by the Kafka adapter when a new message is consumed.
+     */
+    fun onMessageConsumed(
+        sessionId: String,
+        message: ConsumedMessage,
+    ) {
+        // 1. Add to buffer
+        registry.addMessage(sessionId, message)
+
+        // 2. Broadcast to real-time subscribers
+        broadcaster.broadcast(sessionId, message)
+    }
+
+    /**
+     * Subscribes a listener to a session's message stream.
+     */
+    fun subscribe(
+        sessionId: String,
+        onMessage: (ConsumedMessage) -> Unit,
+        onClose: () -> Unit = {},
+    ): String {
+        val session =
+            registry.getSession(sessionId)
+                ?: throw NoSuchElementException("Session not found: $sessionId")
+
+        if (session.state == ConsumeSessionState.STOPPED || session.state == ConsumeSessionState.ERROR) {
+            throw IllegalStateException("Cannot subscribe to an inactive session: $sessionId")
+        }
+
+        return broadcaster.subscribe(sessionId, onMessage, onClose)
+    }
+
+    /**
+     * Unsubscribes from a session's message stream.
+     */
+    fun unsubscribe(
+        sessionId: String,
+        subscriptionId: String,
+    ) {
+        broadcaster.unsubscribe(sessionId, subscriptionId)
+    }
+
     fun getStatus(sessionId: String): ConsumeSessionStatus {
         val session =
             registry.getSession(sessionId)
@@ -125,10 +177,19 @@ class ConsumeSessionService(
     fun getMessages(
         sessionId: String,
         limit: Int,
-    ): List<com.kafka.observatory.core.model.ConsumedMessage> {
+    ): List<ConsumedMessage> {
         if (registry.getSession(sessionId) == null) {
             throw NoSuchElementException("Session not found: $sessionId")
         }
         return registry.getMessages(sessionId, limit)
+    }
+
+    private fun handleSessionError(
+        sessionId: String,
+        e: Exception,
+    ) {
+        logger.error("Error in session $sessionId", e)
+        registry.updateState(sessionId, ConsumeSessionState.ERROR)
+        broadcaster.closeSession(sessionId)
     }
 }
