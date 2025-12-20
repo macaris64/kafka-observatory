@@ -1,6 +1,7 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction, reaction } from "mobx";
 import { TopicStore } from "./TopicStore";
 import { ConsumeStore } from "./ConsumeStore";
+import { ProduceStore } from "./ProduceStore";
 import { apiClient } from "../services/apiClient";
 
 export interface ClusterInfo {
@@ -12,6 +13,7 @@ export interface ClusterInfo {
 export class AppStore {
     topicStore: TopicStore;
     consumeStore: ConsumeStore;
+    produceStore: ProduceStore;
     health: string = "UNKNOWN";
     clusterInfo: ClusterInfo | null = null;
     error: string | null = null;
@@ -19,7 +21,16 @@ export class AppStore {
     constructor() {
         this.topicStore = new TopicStore();
         this.consumeStore = new ConsumeStore();
+        this.produceStore = new ProduceStore();
         makeAutoObservable(this);
+
+        // Sync selected topic to produce store
+        reaction(
+            () => this.topicStore.selectedTopicName,
+            (name) => {
+                if (name) this.produceStore.setTopic(name);
+            }
+        );
     }
 
     async fetchHealth() {

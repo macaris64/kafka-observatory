@@ -5,6 +5,7 @@ import { ClusterStatus } from '../components/ClusterStatus';
 import { TopicTable } from '../components/TopicTable';
 import { ConsumeControls } from '../components/ConsumeControls';
 import { MessageViewer } from '../components/MessageViewer';
+import { ProducerPanel } from '../components/ProducerPanel';
 import { appStore } from '../stores/AppStore';
 
 export const HomePage: React.FC = observer(() => {
@@ -22,7 +23,10 @@ export const HomePage: React.FC = observer(() => {
                         consumeStore={consumeStore}
                         topicName={topicStore.selectedTopicName}
                     />
-                    <MessageViewer consumeStore={consumeStore} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+                        <ProducerPanel produceStore={appStore.produceStore} />
+                        <MessageViewer consumeStore={consumeStore} />
+                    </div>
                 </div>
             </div>
         </AppLayout>
