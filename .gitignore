@@ -80,6 +80,7 @@ coverage/
 *.jar
 *.war
 *.ear
+bin/
 
 target/
 out/
