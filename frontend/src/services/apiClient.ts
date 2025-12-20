@@ -11,6 +11,7 @@ export const apiClient = {
         const json = await response.json();
         return json.data ?? json;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     post: async <T>(url: string, body?: any): Promise<T> => {
         const response = await fetch(`${BASE_URL}/api${url}`, {
             method: 'POST',

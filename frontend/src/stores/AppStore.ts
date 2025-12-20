@@ -35,12 +35,14 @@ export class AppStore {
 
     async fetchHealth() {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = await apiClient.get<any>("/health");
             runInAction(() => {
                 this.health = data.status || "UP";
             });
         } catch (e) {
             runInAction(() => {
+                console.log('Failed to fetch health: ', e)
                 this.health = "DOWN";
                 this.error = "Failed to fetch health";
             });
@@ -49,12 +51,14 @@ export class AppStore {
 
     async fetchClusterInfo() {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const data = await apiClient.get<any>("/cluster");
             runInAction(() => {
                 this.clusterInfo = data;
             });
         } catch (e) {
             runInAction(() => {
+                console.log('Failed to fetch cluster info: ', e)
                 this.error = "Failed to fetch cluster info";
             });
         }

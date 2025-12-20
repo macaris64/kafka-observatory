@@ -12,7 +12,7 @@ build-local-be:
 
 # Build the frontend application
 build-local-fe:
-	cd frontend && npm install && npm run build
+	cd frontend && npm install && npm run lint:fix && npm run build
 
 # --- Test Targets ---
 

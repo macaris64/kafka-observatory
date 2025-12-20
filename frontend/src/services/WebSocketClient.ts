@@ -3,6 +3,7 @@ import { getEnvVar } from "./env";
 export class WebSocketClient {
     private ws: WebSocket | null = null;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     connect(url: string, onMessage: (data: any) => void, onError: (err: any) => void, onClose: () => void) {
         if (this.ws) {
             return;

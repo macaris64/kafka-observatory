@@ -42,6 +42,7 @@ export class ConsumeStore {
                 this.activeSession = session;
                 this.connectWebSocket(session.id);
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || "Failed to start session";
@@ -83,6 +84,7 @@ export class ConsumeStore {
             runInAction(() => {
                 this.activeSession = session;
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || "Failed to pause session";
@@ -97,6 +99,7 @@ export class ConsumeStore {
             runInAction(() => {
                 this.activeSession = session;
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || "Failed to resume session";
@@ -112,6 +115,7 @@ export class ConsumeStore {
                 this.activeSession = null;
                 webSocketClient.disconnect();
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || "Failed to stop session";

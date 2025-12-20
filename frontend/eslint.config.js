@@ -6,7 +6,14 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // ---- Global ignores ----
+  globalIgnores([
+    'dist',
+    'coverage',
+    'jest.setup.ts',
+  ]),
+
+  // ---- Base config (TS + React) ----
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -18,6 +25,23 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+    rules: {
+      // Strict for production code
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
+    },
+  },
+
+  // ---- Test files override ----
+  {
+    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
 ])

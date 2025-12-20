@@ -100,6 +100,7 @@ export class ProduceStore {
                 this.state = "SUCCESS";
                 this.value = ""; // Clear value on success
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
             runInAction(() => {
                 this.error = e.message || "Failed to produce message";

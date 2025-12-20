@@ -3,6 +3,7 @@ import { AppStore, appStore } from "../stores/AppStore";
 
 const StoreContext = createContext<AppStore | null>(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useStores = () => {
     const store = useContext(StoreContext);
     if (!store) {

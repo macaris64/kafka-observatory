@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {type SetStateAction, useState} from 'react';
 import { observer } from 'mobx-react-lite';
 import { ConsumeStore } from '../stores/ConsumeStore';
 
@@ -42,7 +42,7 @@ export const ConsumeControls: React.FC<ConsumeControlsProps> = observer(({ consu
                         <label style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Consumer Offset</label>
                         <select
                             value={from}
-                            onChange={(e) => setFrom(e.target.value as any)}
+                            onChange={(e) => setFrom(e.target.value as SetStateAction<"EARLIEST" | "LATEST">)}
                             style={{ width: '100%' }}
                         >
                             <option value="LATEST">Latest (Live Stream)</option>

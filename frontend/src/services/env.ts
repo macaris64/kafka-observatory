@@ -5,6 +5,7 @@ export const getEnvVar = (name: string, defaultValue: string): string => {
         return metaEnv[name] || defaultValue;
     } catch {
         // Fallback for Jest or other environments
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (globalThis as any)[name] || (globalThis as any).process?.env?.[name] || defaultValue;
     }
 };

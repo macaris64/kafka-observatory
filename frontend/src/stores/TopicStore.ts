@@ -28,6 +28,7 @@ export class TopicStore {
             });
         } catch (e) {
             runInAction(() => {
+                console.log('Failed to fetch topics: ', e)
                 this.error = "Failed to fetch topics";
                 this.loading = false;
             });
