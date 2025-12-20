@@ -22,6 +22,11 @@ sequenceDiagram
     Client->>Server: GET /api/topics
     Server-->>Client: List of Topics
 
+    Note over Client, Kafka: Production Phase
+    Client->>Server: POST /api/produce (Message Content)
+    Server->>Kafka: Send Record
+    Server-->>Client: {topic, partition, offset}
+
     Note over Client, Kafka: Consumption Phase
     Client->>Server: POST /api/consume-sessions (Topic X)
     Server->>Kafka: Start Consumer Thread
@@ -68,6 +73,14 @@ Users can manage active consumers without stopping them entirely.
 1.  **Pause**: User clicks "Pause" in the UI. Backend pauses the specific Kafka consumer. No new data is polled, saving battery/CPU/Network.
 2.  **Resume**: User clicks "Resume". Polling starts exactly where it left off.
 3.  **Timeout**: If a user closes their tab without "Stopping" the session, the Server automatically detects inactivity and closes the session after a timeout (e.g., 5 minutes) to reclaim resources.
+
+### Flow D: Producing Data
+Users can test their consumption logic without external tools.
+
+1.  **Preparation**: User enters topic, key, and value in the Producer UI.
+2.  **Submission**: User clicks "Send".
+3.  **Validation**: Backend sends the data to Kafka and returns the assigned partition and offset.
+4.  **Feedback**: The UI shows a success notification with the production metadata.
 
 ---
 
