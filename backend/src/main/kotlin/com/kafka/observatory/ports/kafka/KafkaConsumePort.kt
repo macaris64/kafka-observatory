@@ -10,7 +10,10 @@ interface KafkaConsumePort {
     /**
      * Starts a background consumption process for the given session.
      */
-    fun startConsumption(session: ConsumeSession)
+    fun startConsumption(
+        session: ConsumeSession,
+        onMessage: (com.kafka.observatory.core.model.ConsumedMessage) -> Unit,
+    )
 
     /**
      * Stops the background consumption process for the given session ID.

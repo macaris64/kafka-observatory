@@ -25,7 +25,10 @@ class KafkaConsumeAdapter(
     // Track active consumers to allow wakeup/close
     private val activeConsumers = ConcurrentHashMap<String, KafkaConsumer<String, String>>()
 
-    override fun startConsumption(session: ConsumeSession) {
+    override fun startConsumption(
+        session: ConsumeSession,
+        onMessage: (ConsumedMessage) -> Unit,
+    ) {
         // Create consumer
         val consumer =
             try {
@@ -38,7 +41,7 @@ class KafkaConsumeAdapter(
         activeConsumers[session.id] = consumer
 
         executor.submit {
-            pollLoop(session, consumer)
+            pollLoop(session, consumer, onMessage)
         }
         logger.info("Started consumption for session ${session.id} on topic ${session.topic}")
     }
@@ -73,6 +76,7 @@ class KafkaConsumeAdapter(
     private fun pollLoop(
         session: ConsumeSession,
         consumer: KafkaConsumer<String, String>,
+        onMessage: (ConsumedMessage) -> Unit,
     ) {
         try {
             consumer.subscribe(listOf(session.topic))
@@ -113,7 +117,7 @@ class KafkaConsumeAdapter(
                                 value = record.value(),
                                 headers = record.headers().associate { it.key() to String(it.value()) },
                             )
-                        registry.addMessage(session.id, message)
+                        onMessage(message)
                     }
                 } catch (e: WakeupException) {
                     logger.info("Consumer woken up for session ${session.id} - checking state")
