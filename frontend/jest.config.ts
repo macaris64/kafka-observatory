@@ -13,6 +13,9 @@ const config: Config = {
             'ts-jest',
             {
                 tsconfig: 'tsconfig.test.json',
+                diagnostics: {
+                    ignoreCodes: [1343, 2339]
+                }
             },
         ],
     },

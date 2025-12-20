@@ -1,9 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { HomePage } from './HomePage';
 
 describe('HomePage', () => {
-    it('renders welcome message', () => {
-        render(<HomePage />);
-        expect(screen.getByText(/Welcome to the Kafka Observatory UI/i)).toBeInTheDocument();
+    it('renders cluster status', async () => {
+        await act(async () => {
+            render(<HomePage />);
+        });
+        expect(screen.getByText(/System Overview/i)).toBeInTheDocument();
     });
 });

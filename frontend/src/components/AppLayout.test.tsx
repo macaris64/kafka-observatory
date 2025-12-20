@@ -8,7 +8,7 @@ describe('AppLayout', () => {
                 <div data-testid="child">Child Content</div>
             </AppLayout>
         );
-        expect(screen.getByText(/Kafka Observatory UI/i)).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /Kafka Observatory/i })).toBeInTheDocument();
         expect(screen.getByTestId('child')).toBeInTheDocument();
     });
 });
